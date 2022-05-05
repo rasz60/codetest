@@ -13,8 +13,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
 <title>Insert title here</title>
 <style>
+header>p.display-4 {
+	font-size: 30px;
+	font-style: italic;
+	font-weight: 500;
+}
+
 input#search, input#search:focus {
 	outline: none;
+}
+
+.table td {
+	border: none;
 }
 </style>
 
@@ -23,7 +33,7 @@ input#search, input#search:focus {
 <section class="container">
 	
 	<header class="bg-info text-center">
-		<p class="display-4 text-white pt-2">oEmbed Test</p>
+		<p class="display-4 text-white pt-4">oEmbed Test</p>
 	
 		<div class="pb-2">
 			<div class="form-group mx-2 p-2 row mx-0 bg-white rounded">
@@ -36,8 +46,95 @@ input#search, input#search:focus {
 		</div>	
 	</header>
 
-	<div class="bg-light" style="height: 800px;">
-		
+	<div class="bg-light p-4">
+		<div class="table-box bg-white p-3">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td class="col-1">title</td>
+						<td class="col-10"></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>type</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>version</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>provider_name</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>provider_url</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>author_name</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>author_url</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>is_plus</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>html<br />(640/480)</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>width</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>height</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>duration</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>description</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>thumbnail_url<br/>(640X480)</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>thumbnail_width</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>thumbnail_height</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>thumbnail_url_with<br/>_play_button</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>upload_date</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>video_id</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>uri</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </section>
 </body>
