@@ -137,5 +137,33 @@ input#search, input#search:focus {
 		</div>
 	</div>
 </section>
+
+<script>
+$('#searchBtn').click(function() {
+	let url = $('#search').val();
+	
+	if(url == '' || url == null ) {
+		return false;
+	}
+	
+	console.log(url);
+	
+	$.ajax({
+		url: 'embed',
+		type: 'post',
+		data: {url : url},
+		success: function(data) {
+			console.log(data);
+		},
+		error: function() {
+			alert('error');
+		}
+	
+	})
+	
+})
+</script>
+
+
 </body>
 </html>
