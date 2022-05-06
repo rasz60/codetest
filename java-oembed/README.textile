@@ -1,0 +1,156 @@
+h1. Simple oembed implementation for Java based on Apache HttpClient
+
+!https://github.com/michael-simons/java-oembed/workflows/build/badge.svg!:https://github.com/michael-simons/java-oembed/actions !https://sonarcloud.io/api/project_badges/measure?project=eu.michael-simons%3Ajava-oembed&metric=coverage!:https://sonarcloud.io/dashboard?id=eu.michael-simons%3Ajava-oembed !https://sonarcloud.io/api/project_badges/measure?project=eu.michael-simons%3Ajava-oembed&metric=alert_status!:https://sonarcloud.io/dashboard?id=eu.michael-simons%3Ajava-oembed
+
+This is a very simple Java client for consuming "Oembed":http://www.oembed.com/ enabled sites.
+
+It uses "Jackson":http://jackson.codehaus.org/ for JSON processing and JAXB for XML parsing.
+
+The core service of this project is the _OembedService_ which takes several endpoints. Those endpoints contains url schemes of urls that should be embedded, the URL of the corresponding Oembed endpoint and optional renderers.
+
+java-oembed can be configured to use an "ehcache CacheManager instance":http://ehcache.org/.
+
+The project is a ready to use configured maven/eclipse project and works nice my "java-autolinker":https://github.com/michael-simons/java-autolinker.
+
+*Important*
+
+Since version 0.4.1 this project is Java 8 *only*. Upgrading from 0.3.x will break stuff. I've rewritten nearly everything from scratch, so have a look at the test code or the following small example. The project is now fully tested.
+
+Since version 0.6.1 this project is Java 10 *only*. In addition, it uses Spring Boots dependency management. Upgrading from 0.5.x will break stuff if you're not on JDK10 or higher.
+
+Since version 0.7.1 I have changed the API of _OembedService_ and removed _Optional<>_ as input parameter as suggested by various people (Joshua Bloch, Simon Harrer and others). I also took the freedom to apply some checkstyle rules and thus noticing I had several classes from which could have been extended. Those are now final as they should not have been part of the public API.
+
+Since version 0.8.1 this project is Java 11 *only*.
+
+The project is not yet on the module path because java-oembed uses JAXB for parsing XML which currently leads to a "split-package problem":https://github.com/javaee/jaxb-v2/issues/1168.
+
+h2. Usage
+
+h3. Dependency:
+
+java-oembed is available in the Central Repository (since 0.2.10):
+
+<pre><code>
+<dependency>
+    <groupId>eu.michael-simons</groupId>
+    <artifactId>java-oembed</artifactId>
+    <version>0.8.1</version>
+</dependency>
+</code></pre>
+
+h3. Standalone
+
+<pre><code lang="java">
+public static void main(String... a) {
+	final List<OembedEndpoint> endpoints = new ArrayList<>();
+	OembedEndpoint endpoint;
+
+	endpoint = new OembedEndpoint();
+	endpoint.setName("youtube");
+	endpoint.setFormat(Format.json);
+	endpoint.setMaxWidth(480);
+	endpoint.setEndpoint("https://www.youtube.com/oembed");
+	endpoint.setUrlSchemes(Arrays.asList("https?://(www|de)\\.youtube\\.com/watch\\?v=.*"));
+	// Optional, specialised renderer, not included here
+	// endpoint.setResponseRendererClass(YoutubeRenderer.class);
+	endpoints.add(endpoint);
+
+	final OembedService oembedService = new OembedService(new DefaultHttpClient(), null, endpoints, "some-app");
+	System.out.println(oembedService.embedUrls("Need some action... <a href=\"https://www.youtube.com/watch?v=dgL6ovr3DJM\">The Hoff!</a>", Optional.empty()));
+    }
+</code></pre>
+
+The builders are gone as you may have noticed. You can add / write them, if you want ;), otherwise i recommend using that stuff in a Spring Boot application like so:
+
+h3. In a Spring Boot application
+
+<pre><code lang="java">
+import ac.simons.oembed.OembedEndpoint;
+import ac.simons.oembed.OembedService;
+import java.util.List;
+import net.sf.ehcache.CacheManager;
+import org.apache.http.client.HttpClient;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @author Michael J. Simons, 2014-12-31
+ */
+@Configuration
+@ConfigurationProperties(prefix = "some-app.oembed")
+public class OembedConfig {
+    private List<OembedEndpoint> endpoints;
+
+    private boolean autodiscovery = false;
+
+    private String cacheName;
+
+    private Integer defaultCacheAge;
+
+    public List<OembedEndpoint> getEndpoints() {
+	return endpoints;
+    }
+
+    public void setEndpoints(List<OembedEndpoint> endpoints) {
+	this.endpoints = endpoints;
+    }
+
+    public boolean isAutodiscovery() {
+	return autodiscovery;
+    }
+
+    public void setAutodiscovery(boolean autodiscovery) {
+	this.autodiscovery = autodiscovery;
+    }
+
+    public String getCacheName() {
+	return cacheName;
+    }
+
+    public void setCacheName(String cacheName) {
+	this.cacheName = cacheName;
+    }
+
+    public Integer getDefaultCacheAge() {
+	return defaultCacheAge;
+    }
+
+    public void setDefaultCacheAge(Integer defaultCacheAge) {
+	this.defaultCacheAge = defaultCacheAge;
+    }
+
+    @Bean
+    public OembedService oembedService(HttpClient httpClient, CacheManager cacheManager) {
+	final OembedService oembedService = new OembedService(httpClient, cacheManager, endpoints, "some-app");
+	oembedService.setAutodiscovery(this.autodiscovery);
+	if(this.cacheName != null) {
+	    oembedService.setCacheName(cacheName);
+	}
+	if(this.defaultCacheAge != null) {
+	    oembedService.setDefaultCacheAge(defaultCacheAge);
+	}
+	return oembedService;
+    }
+}
+</code></pre>
+
+and achieving the same result as in the stand alone version through the following properties:
+
+<pre><code>
+
+# A flag wether autodiscovery of oembed endpoints should be tried. Defaults to false.
+# some-app.oembed.autodiscovery =
+
+# The name of the cached used by this service. Defaults to "ac.simons.oembed.OembedService".
+# some-app.oembed.cacheName
+
+# Time in seconds responses are cached. Used if the response has no cache_age, defaults to 3600 (one hour).
+# some-app.oembed.defaultCacheAge =
+
+some-app.oembed.endpoints[0].name = youtube
+some-app.oembed.endpoints[0].endpoint = https://www.youtube.com/oembed
+some-app.oembed.endpoints[0].maxWidth = 480
+some-app.oembed.endpoints[0].urlSchemes[0] = https?://(www|de)\\.youtube\\.com/watch\\?v=.*
+# some-app.oembed.endpoints[0].responseRendererClass = de.dailyfratze.text.oembed.YoutubeRenderer
+</code></pre>
