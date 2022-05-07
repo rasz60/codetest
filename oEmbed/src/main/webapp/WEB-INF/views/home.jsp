@@ -23,6 +23,16 @@ input#search, input#search:focus {
 	outline: none;
 }
 
+.table-box {
+	overflow-x: auto;
+}
+
+#embed_title {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .table td {
 	border: none;
 }
@@ -46,95 +56,8 @@ input#search, input#search:focus {
 		</div>	
 	</header>
 
-	<div class="bg-light p-4">
-		<div class="table-box bg-white p-3">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<td class="col-1">title</td>
-						<td class="col-10"></td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>type</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>version</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>provider_name</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>provider_url</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>author_name</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>author_url</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>is_plus</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>html<br />(640/480)</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>width</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>height</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>duration</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>description</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>thumbnail_url<br/>(640X480)</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>thumbnail_width</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>thumbnail_height</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>thumbnail_url_with<br/>_play_button</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>upload_date</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>video_id</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>uri</td>
-						<td></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+	<div id="result" class="bg-light p-4">
+
 	</div>
 </section>
 
@@ -154,14 +77,159 @@ $('#searchBtn').click(function() {
 		data: {url : url},
 		success: function(data) {
 			console.log(data);
+			if( data == null || data == '' ) {
+				alert('유효하지 않은 url입니다.');
+				return false;
+			} else {
+				let result = resultBox(data);
+				$('#result').html(result);
+			}
 		},
 		error: function() {
-			alert('error');
+			alert('유효하지 않은 url입니다.');
+			return false;
 		}
 	
 	})
 	
 })
+
+
+function resultBox(data) {
+	let resultBox = '<div class="table-box bg-white p-3 border rounded">';
+	resultBox += '<h3 id="embed_title" class="text-center">' + data.title + '</h3>';
+	resultBox += '<hr />';
+	resultBox += '<table class="table table-striped">';
+	resultBox += '<tr>';
+	resultBox += '<td>type</td>';
+	resultBox += '<td>' + data.type + '</td>';
+	resultBox += '</tr>';
+	resultBox += '<tr>';
+	resultBox += '<td>version</td>';
+	resultBox += '<td>' + data.version + '</td>';
+	resultBox += '</tr>';
+	resultBox += '<tr>';
+	resultBox += '<td>provider_name</td>';
+	resultBox += '<td>' + data.provider_name + '</td>';
+	resultBox += '</tr>';
+	resultBox += '<tr>';
+	resultBox += '<td>provider_url</td>';
+	resultBox += '<td>' + data.provider_url + '</td>';
+	resultBox += '</tr>';
+	resultBox += '<tr>';
+	resultBox += '<td>author_name</td>';
+	resultBox += '<td>' + data.author_name + '</td>';
+	resultBox += '</tr>';
+	resultBox += '<tr>';
+	resultBox += '<td>author_url</td>';
+	resultBox += '<td>' + data.author_url + '</td>';
+	resultBox += '</tr>';
+	
+	if( data.is_plus != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>is_plus</td>';
+		resultBox += '<td>' + data.is_plus + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	resultBox += '<tr>';
+	if ( data.height != null ) {
+		
+		resultBox += '<td>html<br />(' + data.width + '/' + data.height + ')</td>';
+		
+	} else {
+		
+		resultBox += '<td>html<br />(' + data.width + ')</td>';
+	}
+	
+	resultBox += '<td>' + data.html + '</td>';
+	resultBox += '</tr>';
+	resultBox += '<tr>';
+	resultBox += '<td>width</td>';
+	resultBox += '<td>' + data.width + '</td>';
+	resultBox += '</tr>';
+
+	resultBox += '<tr>';
+	resultBox += '<td>height</td>';
+	if ( data.height != null ) {
+		
+		resultBox += '<td>' + data.height + '</td>';
+
+	} else {
+		
+		resultBox += '<td>-</td>';
+	}
+	
+	resultBox += '</tr>';
+	
+	if( data.duration != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>duration</td>';
+		resultBox += '<td>' + data.duration + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.description != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>description</td>';
+		resultBox += '<td>' + data.description + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.thumbnail_url != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>thumbnail_url<br/>(' + data.thumbnail_width + 'X' + data.thumbnail_height + ')</td>';
+		resultBox += '<td><a href="' + data.thumbnail_url + '">' + data.thumbnail_url + '</a><br/> <img src="' + data.thumbnail_url + '"/></td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.thumbnail_width != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>thumbnail_width</td>';
+		resultBox += '<td>' + data.thumbnail_width + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.thumbnail_height != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>thumbnail_height</td>';
+		resultBox += '<td>' + data.thumbnail_height + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.thumbnail_url_with_play_button != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>thumbnail_url_with<br/>_play_button</td>';
+		resultBox += '<td><a href="' + data.thumbnail_url_with_play_button + '">' + data.thumbnail_url_with_play_button + '</a></td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.upload_date != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>upload_date</td>';
+		resultBox += '<td>' + data.upload_date + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.video_id != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>video_id</td>';
+		resultBox += '<td>' + data.video_id + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	if( data.uri != null ) {
+		resultBox += '<tr>';
+		resultBox += '<td>uri</td>';
+		resultBox += '<td>' + data.uri + '</td>';
+		resultBox += '</tr>';
+	}
+	
+	resultBox += '</table>';
+	resultBox += '</div>';
+	
+	return resultBox;
+}
 </script>
 
 

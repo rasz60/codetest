@@ -5,12 +5,19 @@ import java.net.URL;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.validator.routines.UrlValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UrlCtrl {
 	
 	private UrlValidator urlVali;
+	private HttpServletResponse httpServletResponse;
+	
+	public UrlCtrl(HttpServletResponse httpServletResponse) {
+		this.urlVali = new UrlValidator();
+		this.httpServletResponse = httpServletResponse;
+	}
 	
 	public String urlValid(String url) {
 		// 유효한 url인지 check
@@ -30,7 +37,7 @@ public class UrlCtrl {
 		// providerURL이 비어있지 않을 경우
 		if (providerURL.isEmpty() == false) {
 			// HttpServletResponse Header에 값 설정 (front에서 구분을 위함 ??? )
-			HttpServletResponse httpServletResponse = null;
+
 			httpServletResponse.addHeader("provider", providerURL);
 			httpServletResponse.addHeader("Access-Control-Expose-Headers", "*");
 		}
