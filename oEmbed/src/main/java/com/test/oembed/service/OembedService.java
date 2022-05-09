@@ -1,8 +1,8 @@
-package com.test.oembed.command;
+package com.test.oembed.service;
 
 import org.json.simple.JSONObject;
 
-public interface OembedCommand {
+public interface OembedService {
 	
 	public JSONObject execute(String url);
 }

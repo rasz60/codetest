@@ -11,7 +11,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-<title>Insert title here</title>
+<title>oEmbed check</title>
 <style>
 header>p.display-4 {
 	font-size: 30px;
@@ -25,6 +25,15 @@ input#search, input#search:focus {
 
 .table-box {
 	overflow-x: auto;
+}
+
+ul {
+	list-style: none;
+}
+
+ul li {
+	text-align: center;
+	font-size: 25px;
 }
 
 #embed_title {
@@ -57,44 +66,103 @@ input#search, input#search:focus {
 	</header>
 
 	<div id="result" class="bg-light p-4">
-
+		<div class="table-box bg-white p-3 border rounded">
+			<h3 id="error_title" class="text-center">Available platforms</h3>
+			<hr />
+			
+			<ul class="row mx-0">
+				<li class="col-4"><i class="fa-brands fa-youtube text-danger"></i>&nbsp;Youtube</li>
+				<li class="col-4"><i class="fa-brands fa-twitter-square text-primary"></i>&nbsp;Twitter</li>
+				<li class="col-4"><i class="fa-brands fa-vimeo text-success"></i>&nbsp;Vimeo</li>
+			</ul>
+		</div>
 	</div>
 </section>
 
 <script>
-$('#searchBtn').click(function() {
+// input에 keydown event 발생 시
+$('#search').keydown(function(key) {
 	let url = $('#search').val();
 	
-	if(url == '' || url == null ) {
-		return false;
+	// case : enter키를 눌렀을 때
+	if ( key.keyCode == 13 ) {
+
+		// ajax submit
+		urlSearch(url);
 	}
-	
-	console.log(url);
-	
-	$.ajax({
-		url: 'embed',
-		type: 'post',
-		data: {url : url},
-		success: function(data) {
-			console.log(data);
-			if( data == null || data == '' ) {
-				alert('유효하지 않은 url입니다.');
-				return false;
-			} else {
-				let result = resultBox(data);
-				$('#result').html(result);
-			}
-		},
-		error: function() {
-			alert('유효하지 않은 url입니다.');
-			return false;
-		}
-	
-	})
 	
 })
 
+// searchBtn click event 발생 시 
+$('#searchBtn').on('click', function() {
+	let url = $('#search').val();
+	
+	// url 값이 없으면 return false
+	if(url == '' || url == null) {
+		return false;
+	}
+	
+	urlSearch(url);
+	
+})
 
+function urlSearch(url) {
+	
+	// step 1. url == null ? return false
+	if(url == '' || url == null) {
+		return false;
+	} 
+	
+	// step2. url != null ? ajax submit
+	else {
+	
+		$.ajax({
+			url: 'embed',
+			type: 'post',
+			data: {url : url},
+			success: function(data) {
+				
+				// case 1 : provider_name이 instagram이거나, wrongURL일 때
+				if (data.provider_name == 'instagram' || data.provider_name == 'wrongURL') {
+					
+					// errorBox 생성
+					let result1 = errorBox(data);
+					$('#result').html(result1);
+				} 
+				
+				// case 2 : provider_name != instagram && provider_name != wrongURL
+				else {
+					// resultBox 생성
+					let result2 = resultBox(data);
+					$('#result').html(result2);
+					
+				}
+			},
+			error: function() {
+				
+				data = {
+						result : '잘못된 url이거나, oEmbed 정보를 제공하지 않는 사이트입니다.'
+				}
+				
+				// errorBox 생성
+				let result3 = errorBox(data);
+				$('#result').html(result1);
+			}
+		})
+	}
+}
+
+// error일 경우 errorbox를 생성하는 메서
+function errorBox(data) {
+	let resultBox = '<div class="table-box bg-white p-3 border rounded">';
+	resultBox += '<h3 id="error_title" class="text-center">';
+	resultBox += '<br/><i class="fa-regular fa-face-sad-tear text-warning"></i><br/><br/>' + data.result;
+	resultBox += '</h3>';
+	resultBox += '</div>';
+	return resultBox;
+}
+
+// ajax가 성공했을 경우 resultbox를 생성하는 메서
 function resultBox(data) {
 	let resultBox = '<div class="table-box bg-white p-3 border rounded">';
 	resultBox += '<h3 id="embed_title" class="text-center">' + data.title + '</h3>';
@@ -134,15 +202,15 @@ function resultBox(data) {
 	
 	resultBox += '<tr>';
 	if ( data.height != null ) {
-		
+
 		resultBox += '<td>html<br />(' + data.width + '/' + data.height + ')</td>';
-		
+
 	} else {
 		
 		resultBox += '<td>html<br />(' + data.width + ')</td>';
 	}
 	
-	resultBox += '<td>' + data.html + '</td>';
+	resultBox += '<td id="html">' + data.html + '</td>';
 	resultBox += '</tr>';
 	resultBox += '<tr>';
 	resultBox += '<td>width</td>';

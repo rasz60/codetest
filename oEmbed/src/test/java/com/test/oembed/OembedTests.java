@@ -7,8 +7,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.test.oembed.command.OembedCommand;
-import com.test.oembed.command.OembedCommandImpl;
+import com.test.oembed.service.OembedService;
+import com.test.oembed.service.OembedServiceImpl;
 import com.test.oembed.util.JsonConverter;
 import com.test.oembed.util.UrlCtrl;
 
@@ -17,7 +17,7 @@ import com.test.oembed.util.UrlCtrl;
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml")
 public class OembedTests {
 	@Autowired
-	private OembedCommand oembedCommandImpl;
+	private OembedService oembedCommandImpl;
 	
 	@Test
 	public void hostTest() {

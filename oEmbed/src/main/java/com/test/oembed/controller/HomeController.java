@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.test.oembed.command.OembedCommand;
+import com.test.oembed.service.OembedService;
 
 /**
  * Handles requests for the application home page.
@@ -22,11 +22,8 @@ public class HomeController {
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	@Autowired
-	private OembedCommand oembedCommandImpl;
+	private OembedService oembeServiceImpl;
 	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
 	@RequestMapping("/")
 	public String home(Locale locale, Model model) {
 		logger.info("home in >>> ");
@@ -38,8 +35,11 @@ public class HomeController {
 	@RequestMapping(value="embed", produces="application/json")
 	public JSONObject embed(String url) {
 		logger.info("embed in(" + url + ") >>> ");
-
-		JSONObject oembed = oembedCommandImpl.execute(url);
+		
+		// OembedServiceImpl 클래스로 url 전달 
+		JSONObject oembed = oembeServiceImpl.execute(url);
+		
+		logger.info("embed result : {}", oembed.get("provider_name"));
 		
 		return oembed;
 	}
