@@ -21,4 +21,5 @@
 #### 7. host url에 맞는 oembed url을 vo객체에 setting
 #### 8. oembed url + submit url을 oembed server로 submit (HttpGet 객체 사용)
 #### 9. HttpResponse 객체 형태로 return된 oembed 정보를 json형태로 parsing
-#### 10. json형태로 ajax return11. ajax 성공했을 때 resultBox, 에러일 때 errorBox 생성
+#### 10. json형태로 ajax return
+#### 11. ajax 성공했을 때 resultBox, 에러일 때 errorBox 생성
