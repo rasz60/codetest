@@ -12,7 +12,7 @@
 # 실행 절차
 
 ## 1. flow
-#### index.jsp > HomeController.class > OembedServiceImpl.class > UrlCtrl.class > JsonParser.class
+###### index.jsp > HomeController.class > OembedServiceImpl.class > UrlCtrl.class > JsonParser.class
 
 ## 2. detail flow
 ###### - client가 input에 url을 입력
