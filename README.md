@@ -6,6 +6,9 @@
 ###### - Json-Simple v.1.1.1
 ###### - Jakarta.activation v.2.0.0
 
+#### 3. Youtube / Twitter / Vimeo embed 가능
+#### 4. instagram 앱 승인 문제로 구현 불가
+
 # 실행 절차
 
 ## flow
