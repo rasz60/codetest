@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.test.oembed.controller.HomeController;
-import com.test.oembed.dto.UrlDto;
+import com.test.oembed.exceptions.ExceptionsResult;
 import com.test.oembed.util.JsonConverter;
 import com.test.oembed.util.UrlCtrl;
+import com.test.oembed.vo.UrlVo;
 
 @Service
 public class OembedServiceImpl implements OembedService {
@@ -57,9 +57,9 @@ public class OembedServiceImpl implements OembedService {
 		else {
 		
 			// oEmbed url setting
-			String embedUrl = new UrlDto(providerURL).getOembedUrl() + url;
+			String embedUrl = new UrlVo(providerURL).getOembedUrl() + url;
 			
-			logger.info("execute result 2-1 : embedUrl = {}" , embedUrl);
+			logger.info("execute result 2-t : embedUrl = {}" , embedUrl);
 			
 			// get oembed info(json)
 			if ( embedUrl != null ) {
@@ -69,17 +69,13 @@ public class OembedServiceImpl implements OembedService {
 				} 
 				
 				// exceptions
-				catch (ClientProtocolException e) {
-					e.printStackTrace();
+				catch (Exception e) {
+					logger.info("execute result 2-f : Exception");
 					
-					logger.info("execute result 2-2 : throw ClientProtocolException");
-				
-				} 
-				
-				catch (IOException e) {
-					e.printStackTrace();
+					jsonResult.put("provider_name", "serverError");
+					jsonResult.put("result", "서버 오류로 oEmbed 정보가 로드되지 못했습니다.");
 					
-					logger.info("execute result 2-3 : throw IOException");
+					e.printStackTrace();
 				}
 			}
 		}

@@ -34,7 +34,7 @@ public class UrlCtrl {
 		
 		String providerURL = null;
 		
-		// validation == true
+		// url validation == true
 		if ( check == true ) {
 			try {
 				// get providerUrl
@@ -43,7 +43,7 @@ public class UrlCtrl {
 			
 			// exceptions
 			catch (Exception e) {
-				logger.info("urlValid result 1-1 : throw Exception");
+				logger.info("urlValid result 1-f : Exception");
 				
 				e.printStackTrace();
 			}

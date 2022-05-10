@@ -23,29 +23,26 @@ public class JsonConverter {
 	}
 	
 	public JSONObject jsonConvert(HttpResponse httpResponse) {
-		logger.info("jsonConvert({})", httpResponse.getEntity());
+		logger.info("jsonConvert({})", httpResponse.getAllHeaders());
 		
 		JSONObject jsonResult = null;
 		
 		try {
+			// HttpResponse convert to JSONObject
 			jsonResult = (JSONObject)jsonParser.parse(EntityUtils.toString(httpResponse.getEntity()));
 			
 			logger.info("jsonConverter() result 1-t : {}", jsonResult.get("provider_name"));
-		} catch (ParseException e) {
 			
-			logger.info("jsonConverter() result 1-f : ParseException");
+		} catch (Exception e) {
 			
-			e.printStackTrace();
+			logger.info("jsonConverter() result 1-f : Exception");
 			
-		} catch (org.json.simple.parser.ParseException e) {
-			logger.info("jsonConverter() result 1-f : org.json.simple.parser.ParseException");
-			
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.info("jsonConverter() result 1-f : IOException");
+			jsonResult.put("provider_name", "serverError");
+			jsonResult.put("result", "서버 오류로 oEmbed 정보가 로드되지 못했습니다.");
 			
 			e.printStackTrace();
-		}
+			
+		} 
 		
 		return jsonResult;
 	}

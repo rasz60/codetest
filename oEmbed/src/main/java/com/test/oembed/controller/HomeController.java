@@ -28,7 +28,7 @@ public class HomeController {
 	public String home(Locale locale, Model model) {
 		logger.info("home in >>> ");
 		
-		return "home";
+		return "index";
 	}
 	
 	@ResponseBody
@@ -36,8 +36,8 @@ public class HomeController {
 	public JSONObject embed(String url) {
 		logger.info("embed in(" + url + ") >>> ");
 		
-		// OembedServiceImpl 클래스로 url 전달 
-		JSONObject oembed = oembeServiceImpl.execute(url);
+		// OembedServiceImpl 클래스로 공백 제거한 url 전달
+		JSONObject oembed = oembeServiceImpl.execute(url.replaceAll("\\p{Z}", ""));
 		
 		logger.info("embed result : {}", oembed.get("provider_name"));
 		

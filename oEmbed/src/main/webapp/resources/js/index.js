@@ -1,85 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-<script src="https://kit.fontawesome.com/b4e02812b5.js" crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-<title>oEmbed check</title>
-<style>
-header>p.display-4 {
-	font-size: 30px;
-	font-style: italic;
-	font-weight: 500;
-}
-
-input#search, input#search:focus {
-	outline: none;
-}
-
-.table-box {
-	overflow-x: auto;
-}
-
-ul {
-	list-style: none;
-}
-
-ul li {
-	text-align: center;
-	font-size: 25px;
-}
-
-#embed_title {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.table td {
-	border: none;
-}
-</style>
-
-</head>
-<body>
-<section class="container">
-	
-	<header class="bg-info text-center">
-		<p class="display-4 text-white pt-4">oEmbed Test</p>
-	
-		<div class="pb-2">
-			<div class="form-group mx-2 p-2 row mx-0 bg-white rounded">
-				<label for="search" class="col-1 text-secondary my-1">
-					<i class="fa-solid fa-link"></i>
-				</label>
-				<input type="text" id="search" placeholder="URL" name="url" class="col-10" style="border:none" />
-				<button id="searchBtn" class="btn btn-sm btn-warning col-1">확인</button>
-			</div>
-		</div>	
-	</header>
-
-	<div id="result" class="bg-light p-4">
-		<div class="table-box bg-white p-3 border rounded">
-			<h3 id="error_title" class="text-center">Available platforms</h3>
-			<hr />
-			
-			<ul class="row mx-0">
-				<li class="col-4"><i class="fa-brands fa-youtube text-danger"></i>&nbsp;Youtube</li>
-				<li class="col-4"><i class="fa-brands fa-twitter-square text-primary"></i>&nbsp;Twitter</li>
-				<li class="col-4"><i class="fa-brands fa-vimeo text-success"></i>&nbsp;Vimeo</li>
-			</ul>
-		</div>
-	</div>
-</section>
-
-<script>
 // input에 keydown event 발생 시
 $('#search').keydown(function(key) {
 	let url = $('#search').val();
@@ -121,9 +39,9 @@ function urlSearch(url) {
 			type: 'post',
 			data: {url : url},
 			success: function(data) {
-				
+				console.log(data.provider_name);
 				// case 1 : provider_name이 instagram이거나, wrongURL일 때
-				if (data.provider_name == 'instagram' || data.provider_name == 'wrongURL') {
+				if (data.provider_name == 'instagram' || data.provider_name == 'wrongURL' || data.provider_name == 'serverError') {
 					
 					// errorBox 생성
 					let result1 = errorBox(data);
@@ -146,7 +64,7 @@ function urlSearch(url) {
 				
 				// errorBox 생성
 				let result3 = errorBox(data);
-				$('#result').html(result1);
+				$('#result').html(result3);
 			}
 		})
 	}
@@ -165,7 +83,11 @@ function errorBox(data) {
 // ajax가 성공했을 경우 resultbox를 생성하는 메서
 function resultBox(data) {
 	let resultBox = '<div class="table-box bg-white p-3 border rounded">';
-	resultBox += '<h3 id="embed_title" class="text-center">' + data.title + '</h3>';
+	if ( data.title != null ) {
+		resultBox += '<h3 id="embed_title" class="text-center">' + data.title + '</h3>';
+	} else {
+		resultBox += '<h3 id="embed_title" class="text-center"> Twitterer : ' + data.author_name + '</h3>';
+	}
 	resultBox += '<hr />';
 	resultBox += '<table class="table table-striped">';
 	resultBox += '<tr>';
@@ -298,8 +220,3 @@ function resultBox(data) {
 	
 	return resultBox;
 }
-</script>
-
-
-</body>
-</html>

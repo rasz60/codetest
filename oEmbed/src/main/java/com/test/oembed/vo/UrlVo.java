@@ -1,11 +1,11 @@
-package com.test.oembed.dto;
+package com.test.oembed.vo;
 
-public class UrlDto {
+public class UrlVo {
 
 	private String providerUrl;
 	private String oembedUrl;
 	
-	public UrlDto(String url) {
+	public UrlVo(String url) {
 		providerUrl = url;
 		// providerUrl을 이용하여 oembedUrl setting
 		setOembedUrl(url);
