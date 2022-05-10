@@ -1,13 +1,13 @@
 # 구현 환경
-## 1. java v.1.8 / spring-framework v.4.3.22.RELEASE / tomcat v.9.0.56
-## 2. dependency setting (maven)
+## 1. Environments
+###### java v.1.8 / spring-framework v.4.3.22.RELEASE / tomcat v.9.0.56
+## 2. Dependency(maven)
 ###### - oEmbed v.0.8.1
 ###### - Commons-Validator v.1.6
 ###### - Json-Simple v.1.1.1
 ###### - Jakarta.activation v.2.0.0
-
-## 3. Youtube / Twitter / Vimeo embed 가능
-## 4. instagram 앱 승인 문제로 구현 불가
+## 3. Platforms
+###### Youtube / Twitter / Vimeo embed 가능, instagram 앱 승인 문제로 구현 불가
 
 # 실행 절차
 
