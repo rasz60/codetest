@@ -8,8 +8,10 @@
 
 # 실행 절차
 
-## index.jsp > HomeController.class > OembedServiceImpl.class > UrlCtrl.class > JsonParser.class
+## flow
+#### index.jsp > HomeController.class > OembedServiceImpl.class > UrlCtrl.class > JsonParser.class
 
+## detail flow
 #### 1. client가 input에 url을 입력
 #### 2. url 값이 null이 아닐 때, /embed 로 ajax submit
 #### 3. submit된 url을 공백 제거 후 OembedServiceImpl 클래스 execute 메서드 실행
